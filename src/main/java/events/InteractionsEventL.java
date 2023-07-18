@@ -16,28 +16,25 @@ public class InteractionsEventL extends ListenerAdapter{
 
         System.out.println(event.getName());
         String command = event.getName();
-        switch(command){
-            case "info":
+        switch (command) {
+            case "info" -> {
                 EmbedBuilder embed = new EmbedBuilder()
                         .setFooter("Developed with much love by Tarallo")
                         .setTitle(":heart: About Jabot")
                         .setDescription("Jabot is a nice project. I'll tell you more. This bot is developed in Java using Java Discord API")
                         .setAuthor("Jabot Website", "https://tarallo.dev/jabot/")
                         .setColor(0X00B0FF);
-
                 event.replyEmbeds(embed.build()).queue();
-                break;
-            case "roll-dice":
-                try{
+            }
+            case "roll-dice" -> {
+                try {
                     int sides = event.getOption("number", OptionMapping::getAsInt);
                     int diceRoll = rollDice(sides);
                     event.reply(":game_die: You rolled a " + diceRoll).queue();
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     event.reply("You must enter a valid integer number");
                 }
-
-
+            }
         }
 
 

@@ -13,8 +13,8 @@ public class DiscordBot {
     public static void main(String[] args) {
 
         System.out.println("Running..");
-
-        JDABuilder bot = JDABuilder.createDefault("TOKEN");
+        final String TOKEN = "MTEzMDgxODk1NTA2NjQ4Njc4Ng.GMwSne.d86IbLIeuuIxl-dSlfo0PcxUkJZ7U2BcyxMoro";
+        JDABuilder bot = JDABuilder.createDefault(TOKEN);
         JDA jda = bot
                 .setActivity(Activity.playing("Java Code"))
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS)
