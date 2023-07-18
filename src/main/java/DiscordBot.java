@@ -13,20 +13,24 @@ public class DiscordBot {
     public static void main(String[] args) {
 
         System.out.println("Running..");
-        final String TOKEN = "MTEzMDgxODk1NTA2NjQ4Njc4Ng.GMwSne.d86IbLIeuuIxl-dSlfo0PcxUkJZ7U2BcyxMoro";
-        JDABuilder bot = JDABuilder.createDefault(TOKEN);
-        JDA jda = bot
+        final String TOKEN = "";
+        JDABuilder builder = JDABuilder.createDefault(TOKEN);
+        JDA bot = builder
                 .setActivity(Activity.playing("Java Code"))
-                .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS)
+                .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                 .addEventListeners(new ReadyEventL(), new MessageEventL(), new InteractionsEventL())
                 .build();
 
-        jda.updateCommands().addCommands(
+        bot.updateCommands().addCommands(
                 Commands.slash("info-bot", "Get info about this bot").setGuildOnly(true),
                 Commands.slash("stats", "Shows the information about current server"),
                 Commands.slash("roll-dice", "Perfect set of dices for your D&D sessions")
                         .addOption(OptionType.INTEGER, "number", "Enter the number of the sides"),
-                Commands.slash("ban", "Ban a user from the server")
+                Commands.slash("adm-news", "admin command")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                        .setGuildOnly(true)
+                        .addOption(OptionType.STRING, "message", "Insert the message you want to send"),
+                Commands.slash("ban", "admin command")
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.BAN_MEMBERS)) // only usable with ban permissions
                         .setGuildOnly(true) // Ban command only works inside a guild
                         .addOption(OptionType.USER, "user", "The user to ban", true) // required option of type user (target to ban)

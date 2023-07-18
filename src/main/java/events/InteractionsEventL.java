@@ -1,7 +1,12 @@
 package events;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
@@ -18,29 +23,45 @@ public class InteractionsEventL extends ListenerAdapter{
         System.out.println(event.getName());
         String command = event.getName();
         switch (command) {
-            case "info" -> {
+            case "info-bot" -> {
                 EmbedBuilder embed = new EmbedBuilder()
                         .setFooter("Developed with much love by Tarallo")
                         .setTitle(":heart: About Jabot")
                         .setDescription("Jabot is a nice project. I'll tell you more. This bot is developed in Java using Java Discord API")
                         .setAuthor("Jabot Website", "https://tarallo.dev/jabot/")
-                        .setColor(0X00B0FF);
+                        .setColor(0X9900FF);
                 event.replyEmbeds(embed.build()).queue();
             }
             case "roll-dice" -> {
-                    int sides = event.getOption("number", OptionMapping::getAsInt);
-                    int diceRoll = rollDice(sides);
-                    if(sides <=1 ){
-                        event.reply("I still don't know a dice with 1 face").queue();
-                    } else{
-                        event.reply(":game_die: You rolled a " + diceRoll).queue();
+                    try{
+                        int sides = event.getOption("number", OptionMapping::getAsInt);
+                        int diceRoll = rollDice(sides);
+                        if(sides <=1 ){
+                            event.reply("I still don't know a dice with 1 face").queue();
+                        } else{
+                            event.reply("**D"+sides+"** :game_die: Nice roll! Result: " + diceRoll).queue();
+                        }
+                    } catch (NullPointerException e){
+                        int diceRoll = rollDice(6);
+                        event.reply(":game_die: Nice roll! Result: " + diceRoll).queue();
+                        System.out.println(e);
                     }
             }
             case "stats " -> {
-                int userCount = event.getGuild().getMemberCount();
-                int serverBoosts = event.getGuild().getBoostCount();
-                String stats = "**Users:** " + userCount + " **Boosts:** " + serverBoosts;
+                int count = event.getGuild().getMemberCount();
+                System.out.println(count);
+                String stats = "Users: "  + count ;
                 event.reply(stats).queue();
+            }
+
+            case "adm-news" -> {
+                String msg = event.getOption("message", OptionMapping::getAsString);
+                EmbedBuilder admnews = new EmbedBuilder()
+                        .setAuthor(event.getMember().getEffectiveName())
+                        .setTitle("Admin message")
+                        .setDescription(msg)
+                        .setColor(0X9900FF);
+                event.replyEmbeds(admnews.build()).queue();
             }
         }
 
