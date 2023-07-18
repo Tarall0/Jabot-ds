@@ -1,9 +1,12 @@
 package events;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+
+import java.util.List;
 
 
 public class InteractionsEventL extends ListenerAdapter{
@@ -34,6 +37,12 @@ public class InteractionsEventL extends ListenerAdapter{
                     } else{
                         event.reply(":game_die: You rolled a " + diceRoll).queue();
                     }
+            }
+            case "stats " -> {
+                int userCount = event.getGuild().getMemberCount();
+                int serverBoosts = event.getGuild().getBoostCount();
+                String stats = "**Users:** " + userCount + " **Boosts:** " + serverBoosts;
+                event.reply(stats).queue();
             }
         }
 
