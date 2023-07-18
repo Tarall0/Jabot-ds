@@ -1,12 +1,10 @@
 package events;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 
 public class InteractionsEventL extends ListenerAdapter{
