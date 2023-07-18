@@ -28,9 +28,15 @@ public class InteractionsEventL extends ListenerAdapter{
                 event.replyEmbeds(embed.build()).queue();
                 break;
             case "roll-dice":
-                int sides = event.getOption("number", OptionMapping::getAsInt);
-                int diceRoll = rollDice(sides);
-                event.reply(":game_die: You rolled a " + diceRoll).queue();
+                try{
+                    int sides = event.getOption("number", OptionMapping::getAsInt);
+                    int diceRoll = rollDice(sides);
+                    event.reply(":game_die: You rolled a " + diceRoll).queue();
+                }
+                catch(Exception e){
+                    event.reply("You must enter a valid integer number");
+                }
+
 
         }
 
