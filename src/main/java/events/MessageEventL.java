@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class MessageEventL extends ListenerAdapter {
@@ -44,21 +43,29 @@ public class MessageEventL extends ListenerAdapter {
     public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event) {
         super.onMessageReactionAdd(event);
 
-        if (!event.getUser().equals(event.getJDA().getSelfUser())){
-            User user = event.getUser();
-            String username = event.getUser().getGlobalName();
-            String emoji = event.getReaction().getEmoji().getAsReactionCode();
-            String channelName = event.getChannel().getAsMention();
+        try{
+            if (!event.getUser().equals(event.getJDA().getSelfUser())){
+                String username = event.getUser().getGlobalName();
+                String emoji = event.getReaction().getEmoji().getAsReactionCode();
+                String channelName = event.getChannel().getAsMention();
 
-            String message = username + " reacted to a message with " +" "+ emoji + " "+ " in "+channelName;
-            event.getGuild().getDefaultChannel().asTextChannel().sendMessage(message).queue();
+                String message = username + " reacted to a message with " +" "+ emoji + " "+ " in "+channelName;
 
+                try{
+                    event.getGuild().getDefaultChannel().asTextChannel().sendMessage(message).queue();
+                }catch (NullPointerException e){
+                    System.out.println(e);
+                }
+
+            }
+        } catch (NullPointerException e){
+            System.out.println(e);
         }
 
     }
 
     @Override
-    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         super.onGuildMemberJoin(event);
         String[] str = new String[]{"It’s a privilege to have you around!", "It is an honor to have such a fellow like you join us!", "We have waited so long to have you among us. At last, the time has come.", "arrived at the party just in time :partying_face:", "just brought some cake... didn't them?"};
         String[] rls = {"\n I am just going to send our community rules.", "\n Sending all our rules for you", "\n We just have some simple rules here"};
@@ -66,10 +73,15 @@ public class MessageEventL extends ListenerAdapter {
         int i = ran.nextInt(str.length);
         int r = ran.nextInt(rls.length);
         String welcome = event.getUser().getAsMention()+" "+str[i];
-        event.getGuild().getDefaultChannel().asTextChannel().sendMessage(welcome+rls[r]).queue();
 
         try {
-            Thread.sleep(5000); // 5000 milliseconds (5 seconds)
+            event.getGuild().getDefaultChannel().asTextChannel().sendMessage(welcome+rls[r]).queue();
+        }catch (NullPointerException e){
+            System.out.println(e);
+        }
+
+        try {
+            Thread.sleep(3000); // 3000 milliseconds (3 seconds)
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
