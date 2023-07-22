@@ -52,14 +52,12 @@ public class MessageEventL extends ListenerAdapter {
                     return;
                 }
                 if (role.getName().equalsIgnoreCase("Moderator")) {
-                    // Moderators have no word filtering, but you can add other actions here if needed
                     return;
                 } else if (role.getName().equalsIgnoreCase("Admin")) {
-                    // Admins have no word filtering, but you can add other actions here if needed
                     return;
                 }
             }
-            // If the user has roles but is not an Admin or Moderator, check for banned words
+         
             checkBannedWords(event.getMessage(), "USER");
         }
         System.out.println(event.getMessage().getAuthor().getName() + " sent '" + event.getMessage().getContentDisplay() + "'");
