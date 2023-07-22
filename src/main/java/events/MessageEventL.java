@@ -41,7 +41,7 @@ public class MessageEventL extends ListenerAdapter {
         }
 
         // Get the user's roles
-        List<Role> userRoles = (List<Role>) event.getMember().getRoles();
+        List<Role> userRoles = Objects.requireNonNull(event.getMember()).getRoles();
 
         // Check for banned words based on user roles
         if (userRoles.isEmpty()) {
@@ -79,7 +79,7 @@ public class MessageEventL extends ListenerAdapter {
             String message = username + " reacted to a message with " +" "+ emoji + " "+ " in "+channelName;
 
             try{
-                event.getGuild().getDefaultChannel().asTextChannel().sendMessage(message).queue();
+                Objects.requireNonNull(event.getGuild().getDefaultChannel()).asTextChannel().sendMessage(message).queue();
             }catch (NullPointerException e){
                 System.out.println(e);
             }
@@ -121,7 +121,7 @@ public class MessageEventL extends ListenerAdapter {
         String welcome = event.getUser().getAsMention()+" "+str[i];
 
         try {
-            event.getGuild().getDefaultChannel().asTextChannel().sendMessage(welcome+rls[r]).queue();
+            Objects.requireNonNull(event.getGuild().getDefaultChannel()).asTextChannel().sendMessage(welcome+rls[r]).queue();
         }catch (NullPointerException e){
             System.out.println(e);
         }
@@ -147,7 +147,7 @@ public class MessageEventL extends ListenerAdapter {
 
         embed.setDescription(head+rules);
 
-        event.getGuild().getDefaultChannel().asTextChannel().sendMessageEmbeds(embed.build())
+        Objects.requireNonNull(event.getGuild().getDefaultChannel()).asTextChannel().sendMessageEmbeds(embed.build())
                 .queue();
 
 
