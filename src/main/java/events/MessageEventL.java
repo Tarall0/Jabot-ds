@@ -101,8 +101,6 @@ public class MessageEventL extends ListenerAdapter {
                         message.getChannel().sendMessage("Your message contains inappropriate content and has been deleted. Please review our rules. ").queue();
                         break;
                     case "USER":
-                        // For users with roles, you can choose a different moderation action here
-                        // For example, you may want to notify moderators or log the incident
                         break;
                 }
                 break; // Exit the loop after finding one banned word
