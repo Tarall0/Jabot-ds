@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +21,7 @@ public class Commands extends ListenerAdapter{
 
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         super.onSlashCommandInteraction(event);
 
         System.out.println(event.getName());
@@ -36,7 +38,7 @@ public class Commands extends ListenerAdapter{
             }
             case "roll-dice" -> {
                     try{
-                        int sides = event.getOption("number", OptionMapping::getAsInt);
+                        int sides = Objects.requireNonNull(event.getOption("number", OptionMapping::getAsInt));
                         int diceRoll = rollDice(sides);
                         if(sides <=1 ){
                             event.reply("I still don't know a dice with 1 face").queue();
@@ -46,12 +48,12 @@ public class Commands extends ListenerAdapter{
                     } catch (NullPointerException e){
                         int diceRoll = rollDice(6);
                         event.reply(":game_die: Nice roll! Result: " + diceRoll).queue();
-                        System.out.println(e);
+                        e.printStackTrace();
                     }
             }
             case "stats" -> {
                 int count = Objects.requireNonNull(event.getGuild()).getMemberCount();
-                int boosts = Objects.requireNonNull(event.getGuild().getBoostCount());
+                int boosts = event.getGuild().getBoostCount();
                 String stats = ":bust_in_silhouette: Users: " + count + "\n\n:butterfly: Boosts: " + boosts;
                 event.reply(stats).queue();
             }

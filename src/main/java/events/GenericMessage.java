@@ -92,7 +92,7 @@ public class GenericMessage extends ListenerAdapter {
             try{
                 Objects.requireNonNull(event.getGuild().getDefaultChannel()).asTextChannel().sendMessage(message).queue();
             }catch (NullPointerException e){
-                System.out.println(e);
+                e.printStackTrace();
             }
 
         }
@@ -101,8 +101,8 @@ public class GenericMessage extends ListenerAdapter {
     }
 
     private void assignRoleToUser(MessageReceivedEvent event, String userId) {
-        String roleName = ROLE_NAME;
-        Role role = event.getGuild().getRolesByName(roleName, true).stream().findFirst().orElse(null);
+
+        Role role = event.getGuild().getRolesByName(ROLE_NAME, true).stream().findFirst().orElse(null);
 
         if (role != null) {
             event.getGuild().addRoleToMember(Objects.requireNonNull(event.getMember()), role).queue();
