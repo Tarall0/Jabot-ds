@@ -93,10 +93,9 @@ public class MessageEventL extends ListenerAdapter {
         String content = message.getContentRaw().toLowerCase();
         for (String bannedWord : bannedWords) {
             if (content.contains(bannedWord)) {
-                // Depending on the user group, you can choose the appropriate moderation action here
+                // Depending on the user group
                 switch (userGroup) {
                     case "DEFAULT":
-                        // For default users, you can delete the message and warn them, or take other actions
                         message.delete().queue();
                         message.getChannel().sendMessage("Your message contains inappropriate content and has been deleted. Please review our rules. ").queue();
                         break;
