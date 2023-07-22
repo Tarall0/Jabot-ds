@@ -1,10 +1,8 @@
 package events;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -23,7 +21,6 @@ public class MessageEventL extends ListenerAdapter {
         Random ran = new Random();
         int j = ran.nextInt(emojis.length);
         // Exit the method if the event objects are null
-        if (event.getAuthor() == null || event.getMessage() == null) return;
 
         if (!event.getAuthor().equals(event.getJDA().getSelfUser())){
 
