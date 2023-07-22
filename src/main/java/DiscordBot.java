@@ -26,7 +26,7 @@ public class DiscordBot {
                 Commands.slash("stats", "Shows the information about current server"),
                 Commands.slash("roll-dice", "Perfect set of dices for your D&D sessions")
                         .addOption(OptionType.INTEGER, "number", "Enter the number of the sides"),
-                Commands.slash("adm-news", "admin command")
+                Commands.slash("adm-news", "Send an important message to the current channel")
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
                         .setGuildOnly(true)
                         .addOption(OptionType.STRING, "message", "Insert the message you want to send"),
