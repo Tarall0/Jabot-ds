@@ -10,13 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+public class MessageEventL extends ListenerAdapter {
 
-public class GenericMessage extends ListenerAdapter {
-
-    private final Set<String> bannedWords = new HashSet<>(Arrays.asList("nigga", "whore", "faggot", "https://", "www."));
-    private Map<String, Integer> messageCountMap = new HashMap<>();
-    private static final int MESSAGE_THRESHOLD = 5;
-    private static final String ROLE_NAME = "Verified";
+    private final Set<String> bannedWords = new HashSet<>(Arrays.asList("nigga", "whore", "faggot", "https://", "www.")); // Add your banned words here
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
@@ -24,16 +20,9 @@ public class GenericMessage extends ListenerAdapter {
         var emojis = new String[]{"U+1F601", "U+1F604", "U+1F643", "U+1F60A", "U+1F607", "U+1F970", "U+1F929", "U+263A"};
         Random ran = new Random();
         int j = ran.nextInt(emojis.length);
-        String userId = event.getAuthor().getId();
-        int currentMessageCount = messageCountMap.getOrDefault(userId, 0) + 1;
-        messageCountMap.put(userId, currentMessageCount);
-
+        // Exit the method if the event objects are null
 
         if (!event.getAuthor().equals(event.getJDA().getSelfUser())){
-
-            if (currentMessageCount == MESSAGE_THRESHOLD) {
-                assignRoleToUser(event, userId);
-            }
 
             if (event.getMessage().getContentRaw().contains("weed")) {
                 event.getMessage().addReaction(Emoji.fromUnicode("U+1F601")).queue(); // Add a reaction
@@ -49,9 +38,9 @@ public class GenericMessage extends ListenerAdapter {
                 event.getMessage().addReaction(Emoji.fromUnicode("U+2665")).queue();
                 event.getMessage().getAuthor().getAsMention();
             }
-
         }
 
+        // Get the user's roles
         List<Role> userRoles = Objects.requireNonNull(event.getMember()).getRoles();
 
         // Check for banned words based on user roles
@@ -59,14 +48,14 @@ public class GenericMessage extends ListenerAdapter {
             checkBannedWords(event.getMessage(), "DEFAULT");
         } else {
             for (Role role : userRoles) {
-                if(role.getName().equalsIgnoreCase("White Role")){
-                    // White role have special permissions
+                if(role.getName().equalsIgnoreCase("white role")){
                     return;
-                } else if (role.getName().equalsIgnoreCase("Moderator")) {
-                    // Moderators have no word filtering
+                }
+                if (role.getName().equalsIgnoreCase("Moderator")) {
+                    // Moderators have no word filtering, but you can add other actions here if needed
                     return;
                 } else if (role.getName().equalsIgnoreCase("Admin")) {
-                    // Admins have no word filtering
+                    // Admins have no word filtering, but you can add other actions here if needed
                     return;
                 }
             }
@@ -92,7 +81,7 @@ public class GenericMessage extends ListenerAdapter {
             try{
                 Objects.requireNonNull(event.getGuild().getDefaultChannel()).asTextChannel().sendMessage(message).queue();
             }catch (NullPointerException e){
-                e.printStackTrace();
+                System.out.println(e);
             }
 
         }
@@ -100,33 +89,23 @@ public class GenericMessage extends ListenerAdapter {
 
     }
 
-    private void assignRoleToUser(MessageReceivedEvent event, String userId) {
-
-        Role role = event.getGuild().getRolesByName(ROLE_NAME, true).stream().findFirst().orElse(null);
-
-        if (role != null) {
-            event.getGuild().addRoleToMember(Objects.requireNonNull(event.getMember()), role).queue();
-            System.out.println(userId);
-
-
-        }
-    }
-
     private void checkBannedWords(Message message, String userGroup) {
         String content = message.getContentRaw().toLowerCase();
         for (String bannedWord : bannedWords) {
             if (content.contains(bannedWord)) {
-
+                // Depending on the user group, you can choose the appropriate moderation action here
                 switch (userGroup) {
                     case "DEFAULT":
+                        // For default users, you can delete the message and warn them, or take other actions
                         message.delete().queue();
                         message.getChannel().sendMessage("Your message contains inappropriate content and has been deleted. Please review our rules. ").queue();
                         break;
                     case "USER":
-                        // User handling
+                        // For users with roles, you can choose a different moderation action here
+                        // For example, you may want to notify moderators or log the incident
                         break;
                 }
-                break;
+                break; // Exit the loop after finding one banned word
             }
         }
     }
