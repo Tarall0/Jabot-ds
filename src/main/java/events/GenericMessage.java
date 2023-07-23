@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class MessageEventL extends ListenerAdapter {
+public class GenericMessage extends ListenerAdapter {
 
     private final Set<String> bannedWords = new HashSet<>(Arrays.asList("nigga", "whore", "faggot", "https://", "www.")); // Add your banned words here
 
@@ -81,7 +81,7 @@ public class MessageEventL extends ListenerAdapter {
             try{
                 Objects.requireNonNull(event.getGuild().getDefaultChannel()).asTextChannel().sendMessage(message).queue();
             }catch (NullPointerException e){
-                System.out.println(e);
+                e.printStackTrace();
             }
 
         }
