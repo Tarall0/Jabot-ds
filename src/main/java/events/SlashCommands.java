@@ -2,9 +2,7 @@ package events;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -12,13 +10,11 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
-public class Commands extends ListenerAdapter{
-
+public class SlashCommands extends ListenerAdapter{
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
@@ -31,7 +27,13 @@ public class Commands extends ListenerAdapter{
                 EmbedBuilder embed = new EmbedBuilder()
                         .setFooter("Developed with much love by Tarallo")
                         .setTitle(":heart: About Jabot")
-                        .setDescription("Jabot is a nice project. I'll tell you more. This bot is developed in Java using Java Discord API")
+                        .setDescription("Jabot is a free project. As a Virtual Community Manager, Jabot helps with server management using great commands and Gandalf's magic. This bot is developed in Java using Java Discord API"+
+                                "\n\n\n**Slash Commands**"+
+                                "\n\n**roll-dice**: Roll a dice of n faces, perfect for your D&D nights"+
+                                "\n\n**stats**: Get server statistics"+
+                                "\n\n**Other Commands**"+
+                                "\n\n**!spin**: Spin a wheel and defies fortune"+
+                                "\n\nMore in the future")
                         .setAuthor("Jabot Website", "https://tarallo.dev/jabot/")
                         .setColor(0X9900FF);
                 event.replyEmbeds(embed.build()).queue();
@@ -51,10 +53,12 @@ public class Commands extends ListenerAdapter{
                         e.printStackTrace();
                     }
             }
+            
+
             case "stats" -> {
                 int count = Objects.requireNonNull(event.getGuild()).getMemberCount();
                 int boosts = event.getGuild().getBoostCount();
-                String stats = ":bust_in_silhouette: Users: " + count + "\n\n:butterfly: Boosts: " + boosts;
+                String stats = ":bust_in_silhouette: Users: " + count + "\n:butterfly: Boosts: " + boosts;
                 event.reply(stats).queue();
             }
 
@@ -70,13 +74,10 @@ public class Commands extends ListenerAdapter{
                     event.reply("You cannot ban this user.").setEphemeral(true).queue();
                     break;
                 }
-                // Before starting our ban request, tell the user we received the command
-                // This sends a "Bot is thinking..." message which is later edited once we finished
                 event.deferReply().queue();
                 String reason = event.getOption("reason", OptionMapping::getAsString);
                 AuditableRestAction<Void> action = Objects.requireNonNull(event.getGuild()).ban(Objects.requireNonNull(target), 3, TimeUnit.MILLISECONDS); // Start building our ban request
-                if (reason != null) // reason is optional
-                    action = action.reason(reason); // set the reason for the ban in the audit logs and ban log
+                if (reason == null) action = action.reason("Not specified"); // set the reason for default reason
                 action.queue(v -> {
                     // Edit the thinking message with our response on success
                     event.getHook().editOriginal("**" + target.getAsMention() + "** was banned by **" + event.getUser().getAsMention() + "**!").queue();
@@ -104,9 +105,10 @@ public class Commands extends ListenerAdapter{
                 List<Message> messagesToDelete = textChannel.getHistory().retrievePast(n).complete();
                 // Delete the messages in bulk
                 textChannel.deleteMessages(messagesToDelete).queue();
-                // send message to the current channel
+                // Send message to the current channel
                 event.reply("Deleted " + n + " messages from this channel.").queue();
             }
+
 
             default -> throw new IllegalStateException("Unexpected value: " + command);
         }

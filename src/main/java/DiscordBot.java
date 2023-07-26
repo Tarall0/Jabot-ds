@@ -12,14 +12,14 @@ public class DiscordBot {
     public static void main(String[] args) {
 
         System.out.println("Running..");
-        final String TOKEN = "TOKEN";
+        final String TOKEN = "Token";
         JDABuilder builder = JDABuilder.createDefault(TOKEN);
 
 
         JDA bot = builder
                 .setActivity(Activity.playing("Java Code"))
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
-                .addEventListeners(new GenericMessage(), new Commands(), new MemberJoin(), new SelectRoles())
+                .addEventListeners(new GenericMessage(), new SlashCommands(), new MemberJoin(), new SelectRoles(), new SpinWheel(), new HourlyMessage())
                 .build();
 
         bot.updateCommands().addCommands(
