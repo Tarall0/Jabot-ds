@@ -1,4 +1,5 @@
 import events.*;
+import db.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -7,18 +8,31 @@ import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
+
+import java.sql.SQLException;
+
+import static db.DatabaseManager.*;
+
 public class DiscordBot {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+
+        String dbHost = "127.0.0.1";
+        String dbName = "jabot";
+        String dbUsername = "root";
+        String dbPassword = "";
+        final String TOKEN = "";
+
+        DatabaseManager dbManager = new DatabaseManager(dbHost, dbName, dbUsername, dbPassword);
 
         System.out.println("Running..");
-        final String TOKEN = "Token";
+
         JDABuilder builder = JDABuilder.createDefault(TOKEN);
 
 
         JDA bot = builder
                 .setActivity(Activity.playing("Java Code"))
-                .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
+                .enableIntents(GatewayIntent.GUILD_VOICE_STATES,GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                 .addEventListeners(new GenericMessage(), new SlashCommands(), new MemberJoin(), new SelectRoles(), new SpinWheel(), new HourlyMessage())
                 .build();
 
@@ -41,5 +55,11 @@ public class DiscordBot {
                         .addOption(OptionType.STRING, "reason", "The ban reason") // optional reason
         ).queue();
 
+        dbManager.connect();
+        dbManager.populateUserTable(bot);
+
+
     }
+
+
 }

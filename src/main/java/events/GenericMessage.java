@@ -52,7 +52,8 @@ public class GenericMessage extends ListenerAdapter {
                     return;
                 }
                 if (role.getName().equalsIgnoreCase("Moderator")) {
-                    // Moderators have no word filtering, but you can add other actions here if needed
+
+
                     return;
                 } else if (role.getName().equalsIgnoreCase("Admin")) {
                     // Admins have no word filtering, but you can add other actions here if needed
