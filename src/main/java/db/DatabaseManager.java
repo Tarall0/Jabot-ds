@@ -60,19 +60,17 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle any database-related errors here
         }
 
     }
 
     public void populateUserTable(JDA jda) {
-        // Connect to the database
+
         connect();
 
         // Get all the guilds (servers) the bot is a member of
         List<Guild> guilds = jda.getGuilds();
 
-        // Loop through each guild to fetch and insert members into the database
         for (Guild guild : guilds) {
             try {
                 List<Member> members = guild.getMembers();
