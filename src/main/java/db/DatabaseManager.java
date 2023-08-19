@@ -115,15 +115,13 @@ public class DatabaseManager {
         updateUserXP(member.getId(), newXP);
 
         // Calculate the user's new level
-        int newLevel = calculateUserLevel(newXP, member.getId());
+        int newLevel = calculateUserLevel(newXP);
 
         // Update the user's level in the database
         updateUserLevel(member.getId(), newLevel);
 
         // Send a message to notify the user of their new level
-        member.getUser().openPrivateChannel().queue(privateChannel -> {
-            privateChannel.sendMessage("Congratulations! You've reached level " + newLevel + " in the bot.").queue();
-        });
+        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Congratulations! You've reached level " + newLevel + " in the bot.").queue());
     }
 
     public int getUserExperience(String userId) {
@@ -191,9 +189,12 @@ public class DatabaseManager {
         return 0;
     }
 
-    public int calculateUserLevel(int xp, String userId) {
+    public int calculateUserLevel(int xp) {
         // Implement your leveling algorithm here
+        System.out.println(xp);
         return xp / 1000;
+
+
     }
 
     public void updateUserLevel(String userId, int level) {
@@ -203,6 +204,14 @@ public class DatabaseManager {
         try(PreparedStatement statement = getConnection().prepareStatement(query)){
             statement.setInt(1, level);
             statement.setString(2, userId);
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("User's level updated.");
+            } else {
+                System.out.println("No rows were updated.");
+            }
 
         }catch (SQLException e){
             e.printStackTrace();

@@ -5,24 +5,13 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Objects;
-
-import static db.DatabaseManager.*;
-
 public class DiscordBot {
 
-    public static void main(String[] args) throws SQLException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
 
         Dotenv config = Dotenv.configure().directory("./").filename(".env").load();
         String token = config.get("TOKEN");

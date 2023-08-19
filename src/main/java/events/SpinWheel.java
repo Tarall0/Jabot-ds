@@ -40,7 +40,7 @@ public class SpinWheel extends ListenerAdapter {
 
         String messageContent = event.getMessage().getContentRaw();
         if (messageContent.equalsIgnoreCase("!spin")) {
-            spinWheel(event.getChannel().asTextChannel(), event.getMember().getId());
+            spinWheel(event.getChannel().asTextChannel(), Objects.requireNonNull(event.getMember()).getId());
         }
     }
 
