@@ -24,6 +24,7 @@ public class GenericMessage extends ListenerAdapter {
 
         if (!event.getAuthor().equals(event.getJDA().getSelfUser())){
 
+
             if (event.getMessage().getContentRaw().contains("weed")) {
                 event.getMessage().addReaction(Emoji.fromUnicode("U+1F601")).queue(); // Add a reaction
                 event.getMessage().addReaction(Emoji.fromUnicode("U+1F96C")).queue();

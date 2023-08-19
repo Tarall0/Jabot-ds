@@ -4,8 +4,21 @@
 Jabot is a free project created for the purpose of applying the knowledge learned during training in Java.
 
 
+1. [Why Java?](#Java)
+    - [JDA](#jda)
+2. [Project Structure](#project-structure)
+3. [Resources](#resources)
+4. [Roadmap](#roadmap)
 
-## Roadmap
+## Why Java? <a name="Java"></a>
+Java is a robust and versatile programming language known for its platform independence.
+
+### JDA <a name="jda"></a>
+Combined with JDA (**Java Discord API**), a powerful framework for building Discord bots and applications. 
+JDA simplifies the integration of your Java code with Discord, offering extensive support and a rich set of features.
+
+
+## Roadmap <a name="roadmap"></a>
 
 - Slash commands for fun 
 

@@ -1,40 +1,55 @@
 import events.*;
 import db.*;
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Objects;
 
 import static db.DatabaseManager.*;
 
 public class DiscordBot {
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, InterruptedException {
 
-        String dbHost = "127.0.0.1";
-        String dbName = "jabot";
-        String dbUsername = "root";
-        String dbPassword = "";
-        final String TOKEN = "";
+        Dotenv config = Dotenv.configure().directory("./").filename(".env").load();
+        String token = config.get("TOKEN");
+        String dbHost = config.get("HOST");
+        String dbName = config.get("DB");
+        String dbUsername = config.get("USER");
+        String dbPassword = config.get("PSW");
 
         DatabaseManager dbManager = new DatabaseManager(dbHost, dbName, dbUsername, dbPassword);
+        dbManager.connect();
 
         System.out.println("Running..");
 
-        JDABuilder builder = JDABuilder.createDefault(TOKEN);
+        JDABuilder builder = JDABuilder.createDefault(token);
 
 
         JDA bot = builder
                 .setActivity(Activity.playing("Java Code"))
                 .enableIntents(GatewayIntent.GUILD_VOICE_STATES,GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                 .addEventListeners(new GenericMessage(), new SlashCommands(), new MemberJoin(), new SelectRoles(), new SpinWheel(), new HourlyMessage())
-                .build();
+                .build()
+                .awaitReady();
+
+        dbManager.insertAllMemberInDB(bot);
+
+
+        // Slash commands
 
         bot.updateCommands().addCommands(
                 net.dv8tion.jda.api.interactions.commands.build.Commands.slash("info-bot", "Get info about this bot").setGuildOnly(true),
@@ -55,8 +70,9 @@ public class DiscordBot {
                         .addOption(OptionType.STRING, "reason", "The ban reason") // optional reason
         ).queue();
 
-        dbManager.connect();
-        dbManager.populateUserTable(bot);
+
+
+
 
 
     }
