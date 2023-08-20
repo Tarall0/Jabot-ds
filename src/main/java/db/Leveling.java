@@ -1,13 +1,18 @@
 package db;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Leveling extends ListenerAdapter {
 
@@ -19,16 +24,24 @@ public class Leveling extends ListenerAdapter {
 
     private final DatabaseManager databaseManager;
 
+    private final Map<Integer, String> levelRoles = new HashMap<>();
+
     public Leveling() {
         databaseManager = new DatabaseManager(dbHost, dbName, dbUsername, dbPassword);
+
+        levelRoles.put(5, "1142772431027699754");
+        levelRoles.put(10, "1142774781586972684");
+        levelRoles.put(15, "1142774872674676838");
+        levelRoles.put(20, "1142774984217993266");
+        // Level X Roles
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         super.onMessageReceived(event);
 
         User author = event.getAuthor();
-        long userId = event.getMember().getIdLong();
+        long userId = Objects.requireNonNull(event.getMember()).getIdLong();
 
        if(!event.getAuthor().isBot()){
            try {
@@ -59,6 +72,7 @@ public class Leveling extends ListenerAdapter {
                    int xp = resultSet.getInt("experience");
                    int currentLevel = resultSet.getInt("level");
                    int xpRequiredForUp = calculateXpRequiredForLevel(currentLevel + 1);
+                   int newLevel = currentLevel + 1;
 
                    if (xp >= xpRequiredForUp) {
                        // Level up
@@ -67,6 +81,17 @@ public class Leveling extends ListenerAdapter {
                        statement.executeUpdate();
 
                        event.getChannel().sendMessage(author.getAsMention() + " has leveled up to level " + (currentLevel + 1) + "!").queue();
+
+                       // Check if the new level corresponds to a role in the mapping
+                       if (levelRoles.containsKey(newLevel)) {
+                           String roleId = levelRoles.get(newLevel);
+                           Role role = event.getGuild().getRoleById(roleId);
+
+                           if (role != null) {
+                               // Assign the role to the user
+                               event.getGuild().addRoleToMember(event.getMember(), role).queue();
+                           }
+                       }
                    }
                }
 

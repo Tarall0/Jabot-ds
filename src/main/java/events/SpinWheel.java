@@ -27,13 +27,13 @@ public class SpinWheel extends ListenerAdapter {
 
         // Define the rewards and their corresponding XP values
         wheelRewards = new HashMap<>();
-        wheelRewards.put("You won a cute puppy!", 100); // 100 XP for winning a puppy
-        wheelRewards.put("Congratulations, you get a free coffee!", 50); // 50 XP for a free coffee
-        wheelRewards.put("You landed on a bag of gold coins!", 200); // 200 XP for gold coins
+        wheelRewards.put("You won a cute puppy! \uD83D\uDC15", 100); // 100 XP for winning a puppy
+        wheelRewards.put("Congratulations, you get a free coffee! ☕", 50); // 50 XP for a free coffee
+        wheelRewards.put("You landed on a bag of gold coins! \uD83D\uDCB0", 200); // 200 XP for gold coins
         wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
-        wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
-        wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
-        wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
+        wheelRewards.put("Whoops! Nothing this time.", 10); // 10 XP for no win
+        wheelRewards.put("Nope, that's a flop", 10); // 10 XP for no win
+        wheelRewards.put("You got a candy, its fruity \uD83C\uDF6C", 20); // 10 XP for no win
     }
 
     @Override
