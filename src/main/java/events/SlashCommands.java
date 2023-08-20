@@ -28,6 +28,7 @@ public class SlashCommands extends ListenerAdapter{
                         .setFooter("Developed with much love by Tarallo")
                         .setTitle(":heart: About Jabot")
                         .setDescription("Jabot is a free project. As a Virtual Community Manager, Jabot helps with server management using great commands and Gandalf's magic. This bot is developed in Java using Java Discord API"+
+                                "\n\nJabot has implemented a system of levels of users interacting in the Discord server."+
                                 "\n\n\n**Slash Commands**"+
                                 "\n\n**roll-dice**: Roll a dice of n faces, perfect for your D&D nights"+
                                 "\n\n**stats**: Get server statistics"+

@@ -31,6 +31,9 @@ public class SpinWheel extends ListenerAdapter {
         wheelRewards.put("Congratulations, you get a free coffee!", 50); // 50 XP for a free coffee
         wheelRewards.put("You landed on a bag of gold coins!", 200); // 200 XP for gold coins
         wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
+        wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
+        wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
+        wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
     }
 
     @Override
@@ -40,11 +43,12 @@ public class SpinWheel extends ListenerAdapter {
 
         String messageContent = event.getMessage().getContentRaw();
         if (messageContent.equalsIgnoreCase("!spin")) {
-            spinWheel(event.getChannel().asTextChannel(), Objects.requireNonNull(event.getMember()).getId());
+            spinWheel(event.getChannel().asTextChannel(), Objects.requireNonNull(event.getMember()).getId(), event.getAuthor().getGlobalName());
         }
+
     }
 
-    private void spinWheel(TextChannel channel, String userId) {
+    private void spinWheel(TextChannel channel, String userId, String username) {
         Random random = new Random();
         List<String> rewardsList = new ArrayList<>(wheelRewards.keySet());
         String selectedReward = rewardsList.get(random.nextInt(rewardsList.size()));
@@ -61,6 +65,6 @@ public class SpinWheel extends ListenerAdapter {
         // Send the reward as a message in the channel
         channel.sendMessage("The wheel is spinning... 🌀").queue();
         channel.sendMessage("Results: **" + selectedReward + "** ").queue();
-        channel.sendMessage("User with ID " + userId + " received " + xpWin + " XP.").queue();
+        channel.sendMessage( username + " just received " + xpWin + " XP").queue();
     }
 }

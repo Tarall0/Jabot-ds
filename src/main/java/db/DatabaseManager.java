@@ -40,8 +40,9 @@ public class DatabaseManager {
             System.out.println("Connection closed with db");
         }
     }
-    public Connection getConnection() {
-        return connection;
+    public Connection getConnection() throws SQLException {
+        String url = "jdbc:mysql://"+host+"/"+database;
+        return DriverManager.getConnection(url, username, password);
     }
 
     public void insertMember(Member member){

@@ -31,7 +31,7 @@ public class DiscordBot {
         JDA bot = builder
                 .setActivity(Activity.playing("Java Code"))
                 .enableIntents(GatewayIntent.GUILD_VOICE_STATES,GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
-                .addEventListeners(new GenericMessage(), new SlashCommands(), new MemberJoin(), new SelectRoles(), new SpinWheel(), new HourlyMessage())
+                .addEventListeners(new GenericMessage(), new SlashCommands(), new MemberJoin(), new SelectRoles(), new SpinWheel(), new HourlyMessage(), new Leveling())
                 .build()
                 .awaitReady();
 
