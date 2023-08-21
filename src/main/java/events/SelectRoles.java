@@ -20,7 +20,7 @@ public class SelectRoles extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         super.onMessageReceived(event);
         if(!event.getAuthor().equals(event.getJDA().getSelfUser())){
-            if(event.getMessage().getContentRaw().contains("!roles")){
+            if(event.getMessage().getContentRaw().contains("!rolesx")){
                 sendEmbedWithButton(event);
             }
         }

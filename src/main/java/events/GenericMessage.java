@@ -1,5 +1,7 @@
 package events;
 
+import db.DatabaseManager;
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -12,7 +14,19 @@ import java.util.*;
 
 public class GenericMessage extends ListenerAdapter {
 
+    private final DatabaseManager databaseManager;
     private final Set<String> bannedWords = new HashSet<>(Arrays.asList("nigga", "whore", "faggot", "https://", "www.")); // Add your banned words here
+
+   public GenericMessage(){
+       // Initialize the DatabaseManager
+       Dotenv config = Dotenv.configure().directory("./").filename(".env").load();
+       String dbHost = config.get("HOST");
+       String dbName = config.get("DB");
+       String dbUsername = config.get("USER");
+       String dbPassword = config.get("PSW");
+       databaseManager = new DatabaseManager(dbHost, dbName, dbUsername, dbPassword);
+       databaseManager.connect(); // Connect to the database
+   }
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
@@ -82,6 +96,10 @@ public class GenericMessage extends ListenerAdapter {
 
             try{
                 Objects.requireNonNull(event.getGuild().getDefaultChannel()).asTextChannel().sendMessage(message).queue();
+                int xpWin = 5;
+
+                // Update the user's XP in the database with the new total XP
+                databaseManager.updateUserXP(event.getUserId(), xpWin);
             }catch (NullPointerException e){
                 e.printStackTrace();
             }
@@ -97,14 +115,10 @@ public class GenericMessage extends ListenerAdapter {
             if (content.contains(bannedWord)) {
                 // Depending on the user group, you can choose the appropriate moderation action here
                 switch (userGroup) {
-                    case "DEFAULT":
-                        // For default users, you can delete the message and warn them, or take other actions
+                    case "DEFAULT", "USER":
+                        databaseManager.updatePoints(message.getAuthor().getId());
                         message.delete().queue();
                         message.getChannel().sendMessage("Your message contains inappropriate content and has been deleted. Please review our rules. ").queue();
-                        break;
-                    case "USER":
-                        // For users with roles, you can choose a different moderation action here
-                        // For example, you may want to notify moderators or log the incident
                         break;
                 }
                 break; // Exit the loop after finding one banned word

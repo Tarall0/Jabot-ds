@@ -41,7 +41,7 @@ public class Leveling extends ListenerAdapter {
         super.onMessageReceived(event);
 
         User author = event.getAuthor();
-        long userId = Objects.requireNonNull(event.getMember()).getIdLong();
+        long userId = Long.parseLong(event.getAuthor().getId());
 
        if(!event.getAuthor().isBot()){
            try {
@@ -82,6 +82,16 @@ public class Leveling extends ListenerAdapter {
 
                        event.getChannel().sendMessage(author.getAsMention() + " has leveled up to level " + (currentLevel + 1) + "!").queue();
 
+                       // Check if the user has an old role at the same level and remove it
+                       if (levelRoles.containsKey(newLevel - 5)) {
+                           String oldRoleId = levelRoles.get(newLevel - 5);
+                           Role oldRole = event.getGuild().getRoleById(oldRoleId);
+                           if (oldRole != null && event.getMember().getRoles().contains(oldRole)) {
+                               event.getGuild().removeRoleFromMember(event.getMember(), oldRole).queue();
+                           }
+                       }
+
+
                        // Check if the new level corresponds to a role in the mapping
                        if (levelRoles.containsKey(newLevel)) {
                            String roleId = levelRoles.get(newLevel);
@@ -89,9 +99,10 @@ public class Leveling extends ListenerAdapter {
 
                            if (role != null) {
                                // Assign the role to the user
-                               event.getGuild().addRoleToMember(event.getMember(), role).queue();
+                               event.getGuild().addRoleToMember(Objects.requireNonNull(event.getMember()), role).queue();
                            }
                        }
+
                    }
                }
 

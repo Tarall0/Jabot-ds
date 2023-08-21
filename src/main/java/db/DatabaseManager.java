@@ -219,5 +219,133 @@ public class DatabaseManager {
         }
     }
 
+    public void updatePoints(String userId){
+        // update points
+        String query = "UPDATE users SET point = ? WHERE user_id = ?";
+        int points = 0;
+
+        try(PreparedStatement statement = getConnection().prepareStatement(query)){
+
+            statement.setInt(1, points);
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void initializeDailySpins() throws SQLException {
+
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = getConnection();
+
+            // SQL query to update daily spin counts for all users
+            String sql = "UPDATE daily_spins SET spin_count = 0";
+
+            statement = connection.prepareStatement(sql);
+
+            // Step 1: Select all user IDs from the 'users' table
+            String selectSql = "SELECT user_id FROM users;";
+            PreparedStatement selectStatement = getConnection().prepareStatement(selectSql);
+            resultSet = selectStatement.executeQuery();
+
+            // Step 2: Prepare the insert statement
+            String insertSql = "INSERT INTO daily_spins (user_id, spin_count) VALUES (?, 0);";
+            PreparedStatement insertStatement = connection.prepareStatement(insertSql);
+
+            while (resultSet.next()) {
+                String userId = resultSet.getString("user_id");
+
+                // Check if the user ID already exists in the 'daily_spins' table
+                String checkSql = "SELECT user_id FROM daily_spins WHERE user_id = ?;";
+                PreparedStatement checkStatement = connection.prepareStatement(checkSql);
+                checkStatement.setString(1, userId);
+                ResultSet checkResult = checkStatement.executeQuery();
+
+                if (!checkResult.next()) {
+                    // The user ID doesn't exist in 'daily_spins', so insert it
+                    insertStatement.setString(1, userId);
+                    insertStatement.executeUpdate();
+                }
+
+                // Close the checkStatement and checkResult
+                checkStatement.close();
+                checkResult.close();
+            }
+
+            // Close the resources
+            resultSet.close();
+            selectStatement.close();
+            insertStatement.close();
+
+            // Execute the update query
+            statement.executeUpdate();
+        } finally {
+            // Close the resources (statement and connection)
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+    }
+
+    public int getSpinCount(String userId){
+        // Retrieve the user's XP from the database
+        String query = "SELECT spin_count FROM daily_spins WHERE user_id = ?";
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
+            statement.setString(1, userId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Retrieve and return the user's experience points
+                    return resultSet.getInt("spin_count");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return 0;
+
+
+    }
+
+    public void updateDailySpinCount(String userId, int newSpinCount) throws SQLException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        int oldSpinCount = getSpinCount(userId);
+
+        try {
+            connection = getConnection();
+
+            // SQL query to update the daily spin count for a specific user
+            String sql = "UPDATE daily_spins SET spin_count = ? WHERE user_id = ?";
+
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, newSpinCount + oldSpinCount);
+            statement.setString(2, userId);
+
+            // Execute the update query
+            statement.executeUpdate();
+        } finally {
+            // Close the resources (statement and connection)
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+    }
+
 
 }
+
+
+
+
+
