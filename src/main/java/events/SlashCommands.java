@@ -33,9 +33,10 @@ public class SlashCommands extends ListenerAdapter{
                                 "\n\n**roll-dice**: Roll a dice of n faces, perfect for your D&D nights"+
                                 "\n\n**stats**: Get server statistics"+
                                 "\n\n**Other Commands**"+
-                                "\n\n**!spin**: Spin a wheel and defies fortune"+
+                                "\n\n**!spin**: Spin a wheel and defies fortune, 3 attempts per day"+
+                                "\n\n**!xp**: Shows current level and experience"+
                                 "\n\nMore in the future")
-                        .setAuthor("Jabot Website", "https://tarallo.dev/jabot/")
+                        .setAuthor("Jabot Github repo", "https://github.com/Tarall0/Jabot-ds")
                         .setColor(0X9900FF);
                 event.replyEmbeds(embed.build()).queue();
             }

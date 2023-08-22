@@ -109,6 +109,14 @@ public class Leveling extends ListenerAdapter {
            } catch(SQLException e){
                e.printStackTrace();
            }
+
+           if(event.getMessage().getContentRaw().equals("!xp")){
+               int xp = databaseManager.getUserExperience(event.getAuthor().getId());
+               int lvl = databaseManager.getUserLevel(event.getAuthor().getId());
+
+               event.getChannel().sendMessage( event.getAuthor().getAsMention()+" -> **XP**: "+xp+" **LVL**: "+lvl).queue();
+               event.getChannel().sendMessage("You need "+(lvl * 1000 + 1000 - xp) +" xp to evolve").queue();
+           }
        }
 
     }
