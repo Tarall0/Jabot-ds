@@ -16,17 +16,16 @@ import java.util.Objects;
 
 public class Leveling extends ListenerAdapter {
 
-    private final Dotenv config = Dotenv.configure().directory("./").filename(".env").load();
-    private final String dbHost = config.get("HOST");
-    private final String dbName = config.get("DB");
-    private final String dbUsername = config.get("USER");
-    private final String dbPassword = config.get("PSW");
-
     private final DatabaseManager databaseManager;
 
     private final Map<Integer, String> levelRoles = new HashMap<>();
 
     public Leveling() {
+        Dotenv config = Dotenv.configure().directory("./").filename(".env").load();
+        String dbHost = config.get("HOST");
+        String dbName = config.get("DB");
+        String dbUsername = config.get("USER");
+        String dbPassword = config.get("PSW");
         databaseManager = new DatabaseManager(dbHost, dbName, dbUsername, dbPassword);
 
         levelRoles.put(5, "1142772431027699754");
