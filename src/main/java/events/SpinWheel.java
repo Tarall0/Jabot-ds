@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SpinWheel extends ListenerAdapter {
     private final DatabaseManager databaseManager;
