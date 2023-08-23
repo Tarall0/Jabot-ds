@@ -28,7 +28,9 @@ JDA simplifies the integration of your Java code with Discord, offering extensiv
 
 - Interact with user
 
-
+- Leveling system with DB
+  
+- Moderating system
 
 
 
