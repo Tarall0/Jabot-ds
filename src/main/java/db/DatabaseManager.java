@@ -1,24 +1,10 @@
 package db;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.attribute.IPermissionContainer;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
-import net.dv8tion.jda.api.entities.channel.unions.DefaultGuildChannelUnion;
-import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
-import org.jetbrains.annotations.NotNull;
-
-import javax.xml.transform.Result;
-import java.awt.*;
 import java.sql.*;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 
 public class DatabaseManager {
@@ -120,24 +106,6 @@ public class DatabaseManager {
         } else {
             System.out.println("The bot is not a member of any guilds.");
         }
-    }
-
-    public void awardExperience(Member member, int experiencePoints) {
-        // Get the user's current XP from the database
-        int currentXP = getUserExperience(member.getId());
-
-        // Update the user's XP
-        int newXP = currentXP + experiencePoints;
-        updateUserXP(member.getId(), newXP);
-
-        // Calculate the user's new level
-        int newLevel = calculateUserLevel(newXP);
-
-        // Update the user's level in the database
-        updateUserLevel(member.getId(), newLevel);
-
-        // Send a message to notify the user of their new level
-        member.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Congratulations! You've reached level " + newLevel + " in the bot.").queue());
     }
 
     public int getUserExperience(String userId) {
@@ -303,7 +271,6 @@ public class DatabaseManager {
     public void initializeDailySpins() throws SQLException {
 
         PreparedStatement statement = null;
-        ResultSet resultSet = null;
 
         try {
             connection = getConnection();
@@ -313,12 +280,12 @@ public class DatabaseManager {
 
             statement = connection.prepareStatement(sql);
 
-            // Step 1: Select all user IDs from the 'users' table
+            // select all user IDs from the 'users' table
             String selectSql = "SELECT user_id FROM users;";
             PreparedStatement selectStatement = getConnection().prepareStatement(selectSql);
-            resultSet = selectStatement.executeQuery();
+            ResultSet resultSet = selectStatement.executeQuery();
 
-            // Step 2: Prepare the insert statement
+            // Prepare the insert statement
             String insertSql = "INSERT INTO daily_spins (user_id, spin_count) VALUES (?, 0);";
             PreparedStatement insertStatement = connection.prepareStatement(insertSql);
 
@@ -410,7 +377,7 @@ public class DatabaseManager {
     }
 
 
-    public List<Member> RetrieveMembersLeaderboard(TextChannel textChannel){
+    public void RetrieveMembersLeaderboard(TextChannel textChannel){
         String query = "SELECT * FROM users ORDER BY level DESC LIMIT 5"; // Query to retrieve up to 5 members for leaderboard
         List<Member> members = new ArrayList<>();
         try(PreparedStatement statement = getConnection().prepareStatement(query)){
@@ -427,7 +394,7 @@ public class DatabaseManager {
 
             StringBuilder memberList = new StringBuilder("\n**⭐ Top Members**\n\n");
             for(Member member : members){
-                memberList.append("**"+getUserName(member.getId())+"**").append(" - LVL: ").append(getUserLevel(member.getId())).append("\n");
+                memberList.append("**").append(getUserName(member.getId())).append("**").append(" - LVL: ").append(getUserLevel(member.getId())).append("\n");
             }
 
             textChannel.sendMessage(memberList.toString()).queue();
@@ -435,7 +402,6 @@ public class DatabaseManager {
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return members;
     }
 
 

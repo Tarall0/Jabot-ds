@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.channel.attribute.IPermissionContainer;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.DefaultGuildChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.time.OffsetDateTime;
@@ -27,11 +28,8 @@ public class User implements net.dv8tion.jda.api.entities.Member {
         this.level = level;
     }
 
-    public User(){
-
-    }
-
     // Getter methods
+    @NotNull
     public String getId() {
         return id;
     }

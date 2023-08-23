@@ -4,7 +4,6 @@ import db.DatabaseManager;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -114,8 +113,9 @@ public class GenericMessage extends ListenerAdapter {
                         // at the third warn the user will be banned
                         if (warnings > 3){
                             AuditableRestAction<Void> action = Objects.requireNonNull(event.getGuild()).ban(Objects.requireNonNull(message.getAuthor()), 3, TimeUnit.MILLISECONDS);
-                            action.queue( v -> { message.getChannel().sendMessage(" The user was banned as several warnings were ignored ").queue(); },
-                                          error -> { message.getChannel().sendMessage("An error occurred while trying to ban the user").queue(); }
+                            action.queue(
+                                    v -> message.getChannel().sendMessage(" The user was banned as several warnings were ignored ").queue(),
+                                    error -> message.getChannel().sendMessage("An error occurred while trying to ban the user").queue()
                             );
                         }
                     }

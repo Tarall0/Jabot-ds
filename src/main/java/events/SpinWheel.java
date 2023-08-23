@@ -9,18 +9,13 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SpinWheel extends ListenerAdapter {
     private final DatabaseManager databaseManager;
     private final Map<String, Integer> wheelRewards;
-    private final Map<String, Integer> dailySpinCounts;
-
     public SpinWheel() {
-
         // Initialize the DatabaseManager
         Dotenv config = Dotenv.configure().directory("./").filename(".env").load();
         String dbHost = config.get("HOST");
@@ -29,9 +24,7 @@ public class SpinWheel extends ListenerAdapter {
         String dbPassword = config.get("PSW");
         databaseManager = new DatabaseManager(dbHost, dbName, dbUsername, dbPassword);
         databaseManager.connect(); // Connect to the database
-        dailySpinCounts = new ConcurrentHashMap<>(); //initialize the daily spins coutner
         initializeDailySpins();
-
         // Define the rewards and their corresponding XP values
         wheelRewards = new HashMap<>();
         wheelRewards.put("You won a cute puppy! \uD83D\uDC15", 100); // 100 XP for winning a puppy
@@ -48,10 +41,8 @@ public class SpinWheel extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         super.onMessageReceived(event);
         if (event.getAuthor().isBot()) return;
-
         String userId = event.getMember().getId();
         String messageContent = event.getMessage().getContentRaw();
-
         if (messageContent.equalsIgnoreCase("!spin")) {
             if (canSpin(userId)) {
                 spinWheel(event.getChannel().asTextChannel(), userId, event.getMember());
@@ -60,7 +51,6 @@ public class SpinWheel extends ListenerAdapter {
             }
         }
     }
-
     private void initializeDailySpins() {
         // Query the database for all users and initialize their daily spins to zero
         // This should be done at the start of each day or bot startup
@@ -70,9 +60,7 @@ public class SpinWheel extends ListenerAdapter {
             e.printStackTrace();
         }
     }
-
     private boolean canSpin(String userId) {
-
         int spinCount = databaseManager.getSpinCount(userId);
         // Limit each user to 3 spins per day
         int spinsPerDay = 3;
@@ -83,7 +71,6 @@ public class SpinWheel extends ListenerAdapter {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
             return true;
         }
 
