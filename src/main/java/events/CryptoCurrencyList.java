@@ -43,10 +43,19 @@ public class CryptoCurrencyList extends ListenerAdapter {
             String name = responseBody.getObject().getString("name");
             String symbol = responseBody.getObject().getString("symbol");
             String price = responseBody.getObject().getJSONObject("market_data").getJSONObject("current_price").getString("usd");
+            String priceChange = responseBody.getObject().getJSONObject("market_data").getString("price_change_24h");
+            String priceChangePerc = responseBody.getObject().getJSONObject("market_data").getString("price_change_percentage_24h");
+            String lastChange = responseBody.getObject().getJSONObject("market_data").getString("last_updated");
 
-            return "Name: " + name + "\n" +
-                    "Symbol: " + symbol + "\n" +
-                    "Price (USD): " + price + "\n";
+
+
+            return "** \uD83E\uDE99 " + name + " current nfo**\n" +
+                    "\n**Name**: " + name + "\n" +
+                    "**Symbol**: " + symbol + "\n" +
+                    "**Price (USD)**: " + price + "\n"+
+                    "**Last 24h**: " + priceChange + "("+priceChangePerc+"%)"+"\n"+
+                    "**Updated**: " + lastChange + "\n";
+
         } catch (Exception e){
             e.printStackTrace();
         }
