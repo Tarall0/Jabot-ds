@@ -35,8 +35,9 @@ public class SlashCommands extends ListenerAdapter{
                                 "\n\n**Other Commands**"+
                                 "\n\n**!spin**: Spin a wheel and defies fortune, 3 attempts per day"+
                                 "\n\n**!xp**: Shows current level and experience"+
+                                "\n\n**!leaderboard**: Returns the top 5 users per level"+
                                 "\n\nMore in the future")
-                        .setAuthor("Jabot Github repo", "https://github.com/Tarall0/Jabot-ds")
+                        .setAuthor("Jabot Github repo", "https://github.com/Tarall0/Jabot -ds")
                         .setColor(0X9900FF);
                 event.replyEmbeds(embed.build()).queue();
             }

@@ -1,10 +1,24 @@
 package db;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.attribute.IPermissionContainer;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.unions.DefaultGuildChannelUnion;
+import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
+import org.jetbrains.annotations.NotNull;
 
+import javax.xml.transform.Result;
+import java.awt.*;
 import java.sql.*;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 public class DatabaseManager {
@@ -46,13 +60,14 @@ public class DatabaseManager {
     }
 
     public void insertMember(Member member){
-        String query = "INSERT INTO users (user_id, username, points, level, experience) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO users (user_id, username, points, level, experience, warnings) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = getConnection().prepareStatement(query)) {
             statement.setString(1, member.getId());
             statement.setString(2, member.getUser().getName());
             statement.setInt(3, 0); // Set default value for points
             statement.setInt(4, 1); // Set default value for level
             statement.setInt(5, 0); // Set default value for experience
+            statement.setInt(6, 0); // Set default value for warnings
 
             int rowsInserted = statement.executeUpdate();
 
@@ -170,6 +185,22 @@ public class DatabaseManager {
         }
     }
 
+    public String getUserName(String id){
+        String query = "SELECT username FROM users WHERE user_id = ? ";
+        try(PreparedStatement statement = getConnection().prepareStatement(query)) {
+            statement.setString(1, id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("username");
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return "no-name";
+    }
+
     public int getUserLevel(String userId) {
         // Retrieve the user's XP from the database
 
@@ -219,16 +250,52 @@ public class DatabaseManager {
         }
     }
 
-    public void updatePoints(String userId){
-        // update points
-        String query = "UPDATE users SET point = ? WHERE user_id = ?";
-        int points = 0;
+    public int getWarnings(String userId){
 
+        String query = "SELECT warnings FROM users WHERE user_id = ?";
         try(PreparedStatement statement = getConnection().prepareStatement(query)){
+            statement.setString(1, userId);
+               try(ResultSet resultSet = statement.executeQuery()){
+                   if(resultSet.next()){
+                       return resultSet.getInt("warnings");
+                   }
+               }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
-            statement.setInt(1, points);
+    public void updateWarnings(String userId){
+        // update warnings
+        String query = "UPDATE users SET warnings = ? WHERE user_id = ?";
+        int warnings = getWarnings(userId);
+        int addWarn = warnings + 1;
+        try(PreparedStatement statement = getConnection().prepareStatement(query)){
+            statement.setInt(1, addWarn);
+            statement.setString(2, userId); // Set the user_id parameter
+            statement.executeUpdate(); // Execute the update statement
 
         }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void initializeMemberSpin(String userId){
+        String query = "INSERT INTO daily_spins (user_id, spin_count) VALUES (?, 0?)";
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
+            statement.setString(1, userId);
+            statement.setInt(2, 0);
+
+            int rowsInserted = statement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Inserted member with ID " + userId + " into the database table for DailySpins.");
+            } else {
+                System.out.println("No rows were inserted.");
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -340,6 +407,35 @@ public class DatabaseManager {
                 connection.close();
             }
         }
+    }
+
+
+    public List<Member> RetrieveMembersLeaderboard(TextChannel textChannel){
+        String query = "SELECT * FROM users ORDER BY level DESC LIMIT 5"; // Query to retrieve up to 5 members for leaderboard
+        List<Member> members = new ArrayList<>();
+        try(PreparedStatement statement = getConnection().prepareStatement(query)){
+            ResultSet resultSet = statement.executeQuery();
+
+            // Iterate through the results and print or process them
+            while (resultSet.next()) {
+                String memberId = resultSet.getString("user_id");
+                String memberName = resultSet.getString("username");
+                int memberLvl = resultSet.getInt("level");
+                Member member = new User(memberId, memberName, memberLvl);
+                members.add(member);
+            }
+
+            StringBuilder memberList = new StringBuilder("\n**⭐ Top Members**\n\n");
+            for(Member member : members){
+                memberList.append("**"+getUserName(member.getId())+"**").append(" - LVL: ").append(getUserLevel(member.getId())).append("\n");
+            }
+
+            textChannel.sendMessage(memberList.toString()).queue();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return members;
     }
 
 

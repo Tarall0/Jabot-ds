@@ -1,8 +1,11 @@
 package db;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -115,6 +119,11 @@ public class Leveling extends ListenerAdapter {
 
                event.getChannel().sendMessage( event.getAuthor().getAsMention()+" -> **XP**: "+xp+" **LVL**: "+lvl).queue();
                event.getChannel().sendMessage("You need "+(lvl * 1000 + 1000 - xp) +" xp to evolve").queue();
+           }
+
+           if(event.getMessage().getContentRaw().equals("!leaderboard")){
+              databaseManager.RetrieveMembersLeaderboard(event.getChannel().asTextChannel());
+
            }
        }
 

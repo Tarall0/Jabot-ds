@@ -1,5 +1,7 @@
 package events;
 
+import db.DatabaseManager;
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -11,10 +13,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.Random;
 
-public class MemberJoin extends ListenerAdapter {
 
+
+public class MemberJoin extends ListenerAdapter {
+    private final DatabaseManager databaseManager;
     private static final String MEMBER_ROLE_NAME = "Member";
     private static final String WELCOME_TITLE = "Welcome to the Server!";
+
+    public MemberJoin(){
+        // Initialize the DatabaseManager
+        Dotenv config = Dotenv.configure().directory("./").filename(".env").load();
+        String dbHost = config.get("HOST");
+        String dbName = config.get("DB");
+        String dbUsername = config.get("USER");
+        String dbPassword = config.get("PSW");
+        databaseManager = new DatabaseManager(dbHost, dbName, dbUsername, dbPassword);
+        databaseManager.connect(); // Connect to the database
+    }
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         super.onGuildMemberJoin(event);
@@ -42,6 +57,9 @@ public class MemberJoin extends ListenerAdapter {
 
             sendWelcomeMessageToDefaultChannel(event.getGuild(), welcome + rls[r]);
             sendWelcomeMessageToDefaultChannel(event.getGuild(), gifUrls[g]);
+
+            databaseManager.insertMember(event.getMember());
+            databaseManager.initializeMemberSpin(event.getMember().getId());
 
 
         }catch (NullPointerException e){

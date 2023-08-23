@@ -40,6 +40,7 @@ public class SpinWheel extends ListenerAdapter {
         wheelRewards.put("Oh no, better luck next time!", 10); // 10 XP for no win
         wheelRewards.put("Whoops! Nothing this time.", 10); // 10 XP for no win
         wheelRewards.put("Nope, that's a flop", 10); // 10 XP for no win
+        wheelRewards.put("Sorry, it's empty this time", 10); // 10 XP for no win
         wheelRewards.put("You got a candy, its fruity \uD83C\uDF6C", 20); // 20 XP for a candy
     }
 
@@ -75,7 +76,7 @@ public class SpinWheel extends ListenerAdapter {
         int spinCount = databaseManager.getSpinCount(userId);
         // Limit each user to 3 spins per day
         int spinsPerDay = 3;
-        if (spinCount < spinsPerDay) {
+        if (spinCount <= spinsPerDay) {
             // Update the database with the new daily spin count
             try {
                 databaseManager.updateDailySpinCount(userId, spinCount + 1);
@@ -103,7 +104,7 @@ public class SpinWheel extends ListenerAdapter {
 
         // Send the reward as a message in the channel
         channel.sendMessage("The wheel is spinning... 🌀").queue();
-        channel.sendMessage("Results: **" + selectedReward + "** ").queue();
-        channel.sendMessage(member.getEffectiveName() + " just received " + xpWin + " XP").queue();
+        channel.sendMessage("**" + selectedReward + "** ").queue();
+        channel.sendMessage("*"+member.getEffectiveName() + " just received " + xpWin + " XP*").queue();
     }
 }
