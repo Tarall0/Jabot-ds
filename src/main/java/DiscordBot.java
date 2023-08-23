@@ -31,7 +31,7 @@ public class DiscordBot {
         JDA bot = builder
                 .setActivity(Activity.playing("Java Code"))
                 .enableIntents(GatewayIntent.GUILD_VOICE_STATES,GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
-                .addEventListeners(new GenericMessage(), new SlashCommands(), new MemberJoin(), new SelectRoles(), new SpinWheel(), new HourlyMessage(), new Leveling())
+                .addEventListeners(new GenericMessage(), new SlashCommands(), new MemberJoin(), new SelectRoles(), new SpinWheel(), new HourlyMessage(), new Leveling(), new CryptoCurrencyList())
                 .build()
                 .awaitReady();
 
@@ -43,6 +43,8 @@ public class DiscordBot {
         bot.updateCommands().addCommands(
                 net.dv8tion.jda.api.interactions.commands.build.Commands.slash("info-bot", "Get info about Jabot").setGuildOnly(true),
                 net.dv8tion.jda.api.interactions.commands.build.Commands.slash("stats", "Shows the information about current server"),
+                net.dv8tion.jda.api.interactions.commands.build.Commands.slash("cryptoinfo", "Get current info of a Crypto Currency")
+                        .addOption(OptionType.STRING, "name", "Insert the valid name of the currency"),
                 net.dv8tion.jda.api.interactions.commands.build.Commands.slash("roll-dice", "Perfect set of dices for your D&D sessions")
                         .addOption(OptionType.INTEGER, "number", "Enter the number of the sides"),
                 net.dv8tion.jda.api.interactions.commands.build.Commands.slash("adm-news", "Send an important message to the current channel")

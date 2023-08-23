@@ -17,7 +17,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class User implements net.dv8tion.jda.api.entities.Member {
-    private String id;
+    private final String id;
     private String username;
     private int level;
 

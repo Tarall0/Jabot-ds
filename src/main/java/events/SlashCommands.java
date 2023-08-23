@@ -32,6 +32,7 @@ public class SlashCommands extends ListenerAdapter{
                                 "\n\n\n**Slash Commands**"+
                                 "\n\n**roll-dice**: Roll a dice of n faces, perfect for your D&D nights"+
                                 "\n\n**stats**: Get server statistics"+
+                                "\n\n**cryptoinfo**: Get crypto currency current info from API"+
                                 "\n\n**Other Commands**"+
                                 "\n\n**!spin**: Spin a wheel and defies fortune, 3 attempts per day"+
                                 "\n\n**!xp**: Shows current level and experience"+
@@ -56,8 +57,17 @@ public class SlashCommands extends ListenerAdapter{
                         e.printStackTrace();
                     }
             }
-            
+            case "cryptoinfo" -> {
+                    try {
+                        String cryptoName = event.getOption("name", OptionMapping::getAsString);
+                        String cryptoInfo = CryptoCurrencyList.getCryptoInfo(cryptoName);
+                        event.reply(cryptoInfo).queue();
 
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+            }
             case "stats" -> {
                 int count = Objects.requireNonNull(event.getGuild()).getMemberCount();
                 int boosts = event.getGuild().getBoostCount();

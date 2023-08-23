@@ -31,6 +31,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.32</version>
         </dependency>
+        <!-- Crypto Currency API -->
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>3.11.12</version> <!-- Use the latest version available -->
+        </dependency>
+
 
     </dependencies>
 
