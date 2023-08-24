@@ -4,10 +4,10 @@
 Jabot is a free project created for the purpose of applying the knowledge learned during training in Java.
 
 
-1. [Why Java?](#why-java-)
-    - [JDA](#jda-)
-2. [Project Structure](#project-structure-)
-4. [Roadmap](#roadmap-)
+1. [Why Java?](#why-java)
+    - [JDA](#jda)
+2. [Project Structure](#project-structure)
+4. [Roadmap](#roadmap)
 
 ## Why Java? <a name="#why-java"></a>
 Java is a robust and versatile programming language known for its platform independence. It can be used in various domains, from web development and mobile app development to enterprise-level applications and even embedded systems.

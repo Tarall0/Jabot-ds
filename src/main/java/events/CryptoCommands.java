@@ -5,18 +5,15 @@ import kong.unirest.Unirest;
 import kong.unirest.HttpResponse;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CryptoCommands extends ListenerAdapter {
 
-    String currencyName = "Bitcoin"; // The cryptocurrency name you want to retrieve
-
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         super.onMessageReceived(event);
 
 
@@ -40,19 +37,6 @@ public class CryptoCommands extends ListenerAdapter {
         }
 
     }
-
-        public static Map<String, String> stampHashMap(Map<String, String> inputMap, String stamp) {
-            Map<String, String> stampedMap = new HashMap<>();
-
-            for (Map.Entry<String, String> entry : inputMap.entrySet()) {
-                String stampedValue = stamp + entry.getValue();
-                stampedMap.put(entry.getKey(), stampedValue);
-            }
-
-            return stampedMap;
-        }
-
-
 
     public static String getCryptoInfo(String cryptoName){
         try{
@@ -83,41 +67,6 @@ public class CryptoCommands extends ListenerAdapter {
         }
 
         return "Failed to retrieve cryptocurrency information";
-    }
-
-
-    public static HashMap<String, String> getCommonCryptos() {
-        HashMap<String, String> commonCryptos = new HashMap<>();
-
-        try {
-            // CoinGecko API endpoint for listing cryptocurrencies
-            String apiUrl = "https://api.coingecko.com/api/v3/coins/markets";
-
-            // Define the parameters for the request
-            String vsCurrency = "usd"; // You can change this to a different currency if needed
-            String order = "market_cap_desc";
-            int perPage = 10; // Number of cryptocurrencies to fetch
-
-            HttpResponse<JsonNode> response = Unirest.get(apiUrl)
-                    .queryString("vs_currency", vsCurrency)
-                    .queryString("order", order)
-                    .queryString("per_page", perPage)
-                    .asJson();
-
-            JsonNode responseBody = response.getBody();
-
-            // Iterate through the JSON array to extract cryptocurrency names
-            for (int i = 0; i < responseBody.getArray().length(); i++) {
-                String cryptoName = responseBody.getArray().getJSONObject(i).getString("name");
-                String cryptoValue = responseBody.getArray().getJSONObject(i).getJSONObject("market_data").getJSONObject("current_price").getString("usd");
-                commonCryptos.put(cryptoName, cryptoValue);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return commonCryptos;
     }
 
     public static Map<String, String> getCryptoInfoList(){
