@@ -38,7 +38,7 @@ public class SlashCommands extends ListenerAdapter{
                                 "\n\n**!xp**: Shows current level and experience"+
                                 "\n\n**!leaderboard**: Returns the top 5 users per level"+
                                 "\n\nMore in the future")
-                        .setAuthor("Jabot Github repo", "https://github.com/Tarall0/Jabot -ds")
+                        .setAuthor("Jabot Github repo", "https://github.com/Tarall0/Jabot-ds")
                         .setColor(0X9900FF);
                 event.replyEmbeds(embed.build()).queue();
             }
@@ -60,13 +60,26 @@ public class SlashCommands extends ListenerAdapter{
             case "cryptoinfo" -> {
                     try {
                         String cryptoName = event.getOption("name", OptionMapping::getAsString);
-                        String cryptoInfo = CryptoCurrencyList.getCryptoInfo(cryptoName);
+                        String cryptoInfo = CryptoCommands.getCryptoInfo(cryptoName);
                         event.reply(cryptoInfo).queue();
-
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-
+            }
+            case "ranmeme" -> {
+                try {
+                    String memeUrl;
+                    memeUrl = RandomMeme.fetchRandomMeme();
+                    if (memeUrl != null) {
+                        event.reply("Here a meme for you!").setEphemeral(true).queue();
+                        TextChannel channel = event.getChannel().asTextChannel();
+                        channel.sendMessage(memeUrl).queue();
+                    } else {
+                        event.getChannel().sendMessage("Failed to fetch a meme.").queue();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             case "stats" -> {
                 int count = Objects.requireNonNull(event.getGuild()).getMemberCount();

@@ -89,8 +89,6 @@ public class Leveling extends ListenerAdapter {
                                event.getGuild().removeRoleFromMember(event.getMember(), oldRole).queue();
                            }
                        }
-
-
                        // Check if the new level corresponds to a role in the mapping
                        if (levelRoles.containsKey(newLevel)) {
                            String roleId = levelRoles.get(newLevel);
