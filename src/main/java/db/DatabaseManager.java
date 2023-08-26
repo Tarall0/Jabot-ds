@@ -1,5 +1,6 @@
 package db;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -189,14 +190,6 @@ public class DatabaseManager {
         return 0;
     }
 
-    public int calculateUserLevel(int xp) {
-        // Implement your leveling algorithm here
-        System.out.println(xp);
-        return xp / 1000;
-
-
-    }
-
     public void updateUserLevel(String userId, int level) {
         // Update the user's level in the database
         // Implement SQL update statement to set the new level value
@@ -341,7 +334,6 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-
         }
         return 0;
 
@@ -355,10 +347,8 @@ public class DatabaseManager {
 
         try {
             connection = getConnection();
-
             // SQL query to update the daily spin count for a specific user
             String sql = "UPDATE daily_spins SET spin_count = ? WHERE user_id = ?";
-
             statement = connection.prepareStatement(sql);
             statement.setInt(1, newSpinCount + oldSpinCount);
             statement.setString(2, userId);
@@ -376,14 +366,12 @@ public class DatabaseManager {
         }
     }
 
-
     public void RetrieveMembersLeaderboard(TextChannel textChannel){
         String query = "SELECT * FROM users ORDER BY level DESC LIMIT 5"; // Query to retrieve up to 5 members for leaderboard
         List<Member> members = new ArrayList<>();
         try(PreparedStatement statement = getConnection().prepareStatement(query)){
             ResultSet resultSet = statement.executeQuery();
-
-            // Iterate through the results and print or process them
+            // Iterate through the results
             while (resultSet.next()) {
                 String memberId = resultSet.getString("user_id");
                 String memberName = resultSet.getString("username");
@@ -391,13 +379,17 @@ public class DatabaseManager {
                 Member member = new User(memberId, memberName, memberLvl);
                 members.add(member);
             }
-
-            StringBuilder memberList = new StringBuilder("\n**⭐ Top Members**\n\n");
+            StringBuilder memberList = new StringBuilder();
             for(Member member : members){
-                memberList.append("**").append(getUserName(member.getId())).append("**").append(" - LVL: ").append(getUserLevel(member.getId())).append("\n");
+                memberList.append("** \uD83D\uDD39").append(getUserName(member.getId())).append("**").append(" ~ lvl ").append(getUserLevel(member.getId())).append(" / ").append("*").append(getUserExperience(member.getId())).append("xp *").append("\n");
             }
+            // Sending an embed message to return members as list
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setColor(0X9900FF);
+            embed.setTitle("⭐ Top Members");
+            embed.setDescription(memberList);
 
-            textChannel.sendMessage(memberList.toString()).queue();
+            textChannel.sendMessageEmbeds(embed.build()).queue();
 
         }catch (SQLException e){
             e.printStackTrace();

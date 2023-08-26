@@ -30,9 +30,10 @@ public class SlashCommands extends ListenerAdapter{
                         .setDescription("Jabot is a free project. As a Virtual Community Manager, Jabot helps with server management using great commands and Gandalf's magic. This bot is developed in Java using Java Discord API"+
                                 "\n\nJabot has implemented a system of levels of users interacting in the Discord server."+
                                 "\n\n\n**Slash Commands**"+
-                                "\n\n**roll-dice**: Roll a dice of n faces, perfect for your D&D nights"+
-                                "\n\n**stats**: Get server statistics"+
-                                "\n\n**cryptoinfo**: Get crypto currency current info from API"+
+                                "\n\n**/roll-dice**: Roll a dice of n faces, perfect for your D&D nights"+
+                                "\n\n**/stats**: Get server statistics"+
+                                "\n\n**/cryptoinfo**: Get crypto currency current info from CoinGecko API"+
+                                "\n\n**/ranmeme**: Generate a Randome meme from Meme API"+
                                 "\n\n**Other Commands**"+
                                 "\n\n**!spin**: Spin a wheel and defies fortune, 3 attempts per day"+
                                 "\n\n**!xp**: Shows current level and experience"+
@@ -61,7 +62,12 @@ public class SlashCommands extends ListenerAdapter{
                     try {
                         String cryptoName = event.getOption("name", OptionMapping::getAsString);
                         String cryptoInfo = CryptoCommands.getCryptoInfo(cryptoName);
-                        event.reply(cryptoInfo).queue();
+                        String img = CryptoCommands.getCryptoImg(cryptoName);
+                        EmbedBuilder embed = new EmbedBuilder();
+                        embed.setColor(0X9900FF);
+                        embed.setThumbnail(img);
+                        embed.setDescription(cryptoInfo);
+                        event.replyEmbeds(embed.build()).queue();
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -84,8 +90,15 @@ public class SlashCommands extends ListenerAdapter{
             case "stats" -> {
                 int count = Objects.requireNonNull(event.getGuild()).getMemberCount();
                 int boosts = event.getGuild().getBoostCount();
+                String test = event.getGuild().getTimeCreated().toString();
+                String date = test.substring(0, 10);
                 String stats = ":bust_in_silhouette: Users: " + count + "\n:butterfly: Boosts: " + boosts;
-                event.reply(stats).queue();
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setColor(0X9900FF);
+                embed.setTitle("Server Statistics");
+                embed.setDescription(stats);
+                embed.setFooter("Created: " +date);
+                event.replyEmbeds(embed.build()).queue();
             }
 
             case "ban" ->{

@@ -55,8 +55,7 @@ public class CryptoCommands extends ListenerAdapter {
 
 
 
-            return "** \uD83E\uDE99 " + name + " currency current details**\n" +
-                    "\n**Name**: " + name + "\n" +
+            return "\n**Name**: " + name + "\n" +
                     "**Symbol**: " + symbol + "\n" +
                     "**Price (USD)**: " + price + "\n"+
                     "**Last 24h**: " + priceChange + "("+priceChangePerc+"%)"+"\n"+
@@ -67,6 +66,25 @@ public class CryptoCommands extends ListenerAdapter {
         }
 
         return "Failed to retrieve cryptocurrency information";
+    }
+
+    public static String getCryptoImg(String cryptoName){
+        try{
+            // CoinGecko API endpoint for retrieving cryptocurrency information
+            String apiUrl = "https://api.coingecko.com/api/v3/coins/" + cryptoName;
+            HttpResponse<JsonNode> response = Unirest.get(apiUrl).asJson();
+            JsonNode responseBody = response.getBody();
+
+            // Extract specific information about Bitcoin (or any other cryptocurrency)
+            String img = responseBody.getObject().getJSONObject("image").getString("small");
+
+            return img;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return "Failed to retrieve cryptocurrency img";
     }
 
     public static Map<String, String> getCryptoInfoList(){
