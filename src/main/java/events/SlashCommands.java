@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static events.CurrentMoon.getCurrentMoon;
+
 
 public class SlashCommands extends ListenerAdapter{
 
@@ -30,6 +32,7 @@ public class SlashCommands extends ListenerAdapter{
                         .setDescription("Jabot is a free project. As a Virtual Community Manager, Jabot helps with server management using great commands and Gandalf's magic. This bot is developed in Java using Java Discord API"+
                                 "\n\nJabot has implemented a system of levels of users interacting in the Discord server."+
                                 "\n\n\n**Slash Commands**"+
+                                "\n\n**/moonphase**: Get the current moon details"+
                                 "\n\n**/roll-dice**: Roll a dice of n faces, perfect for your D&D nights"+
                                 "\n\n**/stats**: Get server statistics"+
                                 "\n\n**/cryptoinfo**: Get crypto currency current info from CoinGecko API"+
@@ -71,6 +74,40 @@ public class SlashCommands extends ListenerAdapter{
                     }catch (Exception e){
                         e.printStackTrace();
                     }
+            }
+
+            case "moonphase" ->{
+
+                try{
+                    EmbedBuilder moon = getCurrentMoon(event);
+                    String phase = moon.build().getTitle();
+                    switch (Objects.requireNonNull(phase)){
+                        case "Full Moon" -> {
+                            moon.setTitle("Full Moon \uD83C\uDF15");
+                        }
+
+                        case "Waxing Cresent" -> {
+                            moon.setTitle("Waxing Cresent Moon \uD83C\uDF12");
+                        }
+
+                        case "Waning Cresent" -> {
+                            moon.setTitle("Waning Cresent Moon \uD83C\uDF18");
+
+                        }
+
+                        case "New Moon" -> {
+                            moon.setTitle("New Moon \uD83C\uDF11");
+                        }
+
+                    }
+
+                    event.replyEmbeds(moon.build()).queue();
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    event.reply("error fetching the moon").queue();
+                }
+
             }
             case "ranmeme" -> {
                 try {
